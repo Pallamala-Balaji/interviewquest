@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang='en'>
+<head>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <title>{% block title %}InterviewQuest{% endblock %}</title>
+  <link rel='preconnect' href='https://fonts.googleapis.com'>
+  <link rel='preconnect' href='https://fonts.gstatic.com' crossorigin>
+  <link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600..800&display=swap'>
+  <link rel='stylesheet' href='{{ url_for("static", filename="css/style.css") }}'>
+</head>
+<body>
+  <a class='skip' href='#main'>Skip to content</a>
+
+  <header class='nav'>
+    <a class='brand' href='{{ url_for("main.home") }}'>Interview<span>Quest</span></a>
+    <nav class='nav-right' aria-label='Main'>
+      {% if current_user.is_authenticated %}
+        <a class='chip' href='{{ url_for("auth.hero") }}' title='Change your hero'>
+          <span class='chip-face' aria-hidden='true'>{{ avatar(current_user.avatar_id) }}</span>
+          <span>{{ current_user.hero_name }}</span>
+        </a>
+        <form method='post' action='{{ url_for("auth.logout") }}' class='inline'>
+          <input type='hidden' name='csrf_token' value='{{ csrf_token() }}'>
+          <button type='submit' class='btn btn-ghost btn-sm'>Log out</button>
+        </form>
+      {% else %}
+        <a class='nav-link' href='{{ url_for("auth.login") }}'>Log in</a>
+        <a class='btn btn-sm' href='{{ url_for("auth.signup") }}'>Sign up</a>
+      {% endif %}
+    </nav>
+  </header>
+
+  <div class='toasts' role='status' aria-live='polite'>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        <div class='flash {{ category }}'>
+          <span>{{ message }}</span>
+          <button type='button' class='flash-close' aria-label='Dismiss message' hidden>&times;</button>
+        </div>
+      {% endfor %}
+    {% endwith %}
+  </div>
+
+  <main id='main' class='page{% block main_class %}{% endblock %}'>
+    {% block content %}{% endblock %}
+  </main>
+
+  <script src='{{ url_for("static", filename="js/ui.js") }}' defer></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block main_class %} is-auth{% endblock %}
+{% block content %}
+<div class='auth'>
+  <aside class='auth-art'>
+    <svg viewBox='0 0 600 800' preserveAspectRatio='xMidYMid slice' aria-hidden='true' focusable='false'>
+      <defs>
+        <linearGradient id='sky' x1='0' y1='0' x2='0' y2='1'>
+          <stop offset='0' style='stop-color:var(--sky-top)'/>
+          <stop offset='1' style='stop-color:var(--sky-low)'/>
+        </linearGradient>
+      </defs>
+      <rect width='600' height='800' fill='url(#sky)'/>
+      <circle cx='450' cy='190' r='58' fill='var(--gold)'/>
+      <rect y='470' width='600' height='330' fill='var(--sea-2)'/>
+      <path d='M0 500 Q75 480 150 500 T300 500 T450 500 T600 500 V800 H0Z' fill='var(--sea-1)' opacity='.75'/>
+      <path d='M0 570 Q75 550 150 570 T300 570 T450 570 T600 570 V800 H0Z' fill='var(--sea-1)' opacity='.5'/>
+      <path d='M170 490 Q300 400 430 490 Z' fill='var(--sand)'/>
+      <path d='M300 450 Q296 385 310 330' stroke='#6B4A2B' stroke-width='8' fill='none' stroke-linecap='round'/>
+      <path d='M310 330 Q265 300 225 332 Q270 322 310 330Z' fill='var(--lagoon)'/>
+      <path d='M310 330 Q355 300 395 332 Q350 322 310 330Z' fill='var(--lagoon)'/>
+      <path d='M310 330 Q298 285 318 260 Q324 300 310 330Z' fill='var(--lagoon)'/>
+    </svg>
+    <p class='story'>{% block story %}{% endblock %}</p>
+  </aside>
+  <div class='auth-panel'>
+    <div class='auth-card'>{% block form %}{% endblock %}</div>
+  </div>
+</div>
+{% endblock %}

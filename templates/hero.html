@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block title %}Choose your hero - InterviewQuest{% endblock %}
+{% block content %}
+{% set current = (form.avatar_id.data or current_user.avatar_id)|string %}
+{% set current_info = avatar_info.get(current, avatar_info['1']) %}
+<form method='post' id='heroForm' class='hero-select' novalidate>
+  {{ form.hidden_tag() }}
+
+  <section class='stage' aria-label='Hero preview'>
+    <div class='platform'>
+      <div class='bob'><span id='stageEmoji' class='stage-emoji'>{{ avatar(current) }}</span></div>
+    </div>
+    <div class='nameplate'>
+      <strong id='plateName'>{{ form.hero_name.data or 'Your hero' }}</strong>
+      <span id='stageType' class='plate-type'>{{ current_info.name }}</span>
+    </div>
+    <p id='stageTag' class='plate-tag'>{{ current_info.tag }}</p>
+    <p id='avatarLive' class='sr-only' aria-live='polite'></p>
+  </section>
+
+  <section class='picker'>
+    <h1>Choose your hero</h1>
+    <p class='lede'>Professor Byte will call you by this name. You can change it any time.</p>
+
+    <fieldset class='avatar-set'>
+      <legend>Pick a character</legend>
+      <div class='avatar-grid'>
+        {% for value, emoji in form.avatar_id.choices %}
+          <label class='avatar-card'>
+            <input type='radio' name='avatar_id' value='{{ value }}' data-emoji='{{ emoji }}' {% if current == value %}checked{% endif %}>
+            <span class='card-face'>
+              <span class='card-emoji' aria-hidden='true'>{{ emoji }}</span>
+              <span class='card-name'>{{ avatar_info[value].name }}</span>
+            </span>
+          </label>
+        {% endfor %}
+      </div>
+      {% for error in form.avatar_id.errors %}<small class='error' role='alert'>{{ error }}</small>{% endfor %}
+    </fieldset>
+
+    <div class='field{% if form.hero_name.errors %} has-error{% endif %}'>
+      {{ form.hero_name.label }}
+      {{ form.hero_name(class_='input', maxlength=20, autocomplete='off') }}
+      <div class='field-foot'>
+        <small class='hint'>2 to 20 characters.</small>
+        <small class='hint' id='nameCount'>{{ (form.hero_name.data or '')|length }}/20</small>
+      </div>
+      {% for error in form.hero_name.errors %}<small class='error' role='alert'>{{ error }}</small>{% endfor %}
+    </div>
+
+    <div class='actions'>
+      <button class='btn' type='submit'>Save hero</button>
+      <button class='btn btn-ghost' type='button' id='surprise' hidden>Surprise me</button>
+    </div>
+  </section>
+</form>
+<script type='application/json' id='avatarData'>{{ avatar_info|tojson }}</script>
+{% endblock %}
+{% block scripts %}
+  <script src='{{ url_for("static", filename="js/hero.js") }}' defer></script>
+{% endblock %}

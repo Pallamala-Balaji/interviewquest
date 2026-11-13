@@ -1,0 +1,20 @@
+{% macro field(f, type='text', autocomplete='off', hint='') %}
+<div class='field{% if f.errors %} has-error{% endif %}'>
+  {{ f.label }}
+  {{ f(class_='input', type=type, autocomplete=autocomplete) }}
+  {% if hint %}<small class='hint'>{{ hint }}</small>{% endif %}
+  {% for error in f.errors %}<small class='error' role='alert'>{{ error }}</small>{% endfor %}
+</div>
+{% endmacro %}
+
+{% macro password_field(f, autocomplete='new-password', hint='') %}
+<div class='field{% if f.errors %} has-error{% endif %}'>
+  {{ f.label }}
+  <div class='input-wrap'>
+    {{ f(class_='input', autocomplete=autocomplete) }}
+    <button type='button' class='reveal' hidden aria-pressed='false' aria-label='Show password'>Show</button>
+  </div>
+  {% if hint %}<small class='hint'>{{ hint }}</small>{% endif %}
+  {% for error in f.errors %}<small class='error' role='alert'>{{ error }}</small>{% endfor %}
+</div>
+{% endmacro %}

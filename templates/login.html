@@ -1,0 +1,15 @@
+{% extends 'auth_base.html' %}
+{% from '_macros.html' import field, password_field %}
+{% block title %}Log in - InterviewQuest{% endblock %}
+{% block story %}Welcome back. The island kept your place, and the villagers have new questions for you.{% endblock %}
+{% block form %}
+  <h1>Log in</h1>
+  <p class='lede'>Pick up your adventure where you left it.</p>
+  <form method='post' novalidate>
+    {{ form.hidden_tag() }}
+    {{ field(form.email, type='email', autocomplete='email') }}
+    {{ password_field(form.password, autocomplete='current-password') }}
+    <button class='btn btn-block' type='submit'>Log in</button>
+  </form>
+  <p class='alt'>New here? <a href='{{ url_for("auth.signup") }}'>Create an account</a></p>
+{% endblock %}

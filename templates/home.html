@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}InterviewQuest{% endblock %}
+{% block content %}
+{% if current_user.is_authenticated %}
+  <section class='welcome'>
+    <div class='platform small'>
+      <div class='bob'><span class='stage-emoji'>{{ avatar(current_user.avatar_id) }}</span></div>
+    </div>
+    <div>
+      <h1>Welcome back, {{ current_user.hero_name }}</h1>
+      <p class='lede'>The island map opens soon. Until then, make your hero your own.</p>
+      <ul class='stats'>
+        <li><strong>{{ current_user.xp_personal }}</strong> XP</li>
+        <li><strong>{{ current_user.streak }}</strong> day streak</li>
+      </ul>
+      <div class='actions'>
+        <a class='btn' href='{{ url_for("auth.hero") }}'>Change hero</a>
+      </div>
+    </div>
+  </section>
+{% else %}
+  <section class='landing'>
+    <div class='landing-copy'>
+      <h1>Write real code to leave the island.</h1>
+      <p class='lede'>InterviewQuest teaches SQL, Python, Git, and more through a story. Beat each boss with 80 out of 100 to unlock the next level.</p>
+      <div class='actions'>
+        <a class='btn btn-gold' href='{{ url_for("auth.signup") }}'>Start your adventure</a>
+        <a class='btn btn-ghost' href='{{ url_for("auth.login") }}'>I have an account</a>
+      </div>
+      <ul class='skills' aria-label='What you will practise'>
+        <li>SQL</li><li>Python</li><li>DSA</li><li>Git</li><li>Flask</li><li>Front end</li><li>ML</li><li>Gen AI</li><li>HR answers</li>
+      </ul>
+    </div>
+
+    <figure class='mission' aria-label='A sample mission'>
+      <figcaption class='mission-head'>
+        <span>Mission 3: Stock check</span>
+        <span class='mission-level'>Island of Tables</span>
+      </figcaption>
+      <p class='byte'>
+        <span class='byte-face' aria-hidden='true'>🦉</span>
+        <span>Professor Byte: Find every item with a quantity above 10, so the village can eat tonight.</span>
+      </p>
+      <pre class='code'><code id='demoCode' data-full='SELECT * FROM storage WHERE quantity &gt; 10;'>SELECT * FROM storage WHERE quantity &gt; 10;</code></pre>
+      <table class='result' id='demoResult'>
+        <thead><tr><th scope='col'>item</th><th scope='col'>quantity</th></tr></thead>
+        <tbody>
+          <tr><td>coconuts</td><td>24</td></tr>
+          <tr><td>rice</td><td>18</td></tr>
+          <tr><td>dried fish</td><td>12</td></tr>
+        </tbody>
+      </table>
+      <p class='reward' id='demoReward'>Mission complete: +10 XP</p>
+    </figure>
+  </section>
+{% endif %}
+{% endblock %}
+{% block scripts %}
+  {% if not current_user.is_authenticated %}
+    <script src='{{ url_for("static", filename="js/home.js") }}' defer></script>
+  {% endif %}
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'auth_base.html' %}
+{% from '_macros.html' import field, password_field %}
+{% block title %}Create your account - InterviewQuest{% endblock %}
+{% block story %}Your ship went down off Table Island. The villagers keep their records in tables. Learn to read them and they will help you home.{% endblock %}
+{% block form %}
+  <h1>Create your account</h1>
+  <p class='lede'>Free to play. You choose your hero next.</p>
+  <form method='post' novalidate>
+    {{ form.hidden_tag() }}
+    {{ field(form.name, autocomplete='name') }}
+    {{ field(form.email, type='email', autocomplete='email') }}
+    {{ password_field(form.password, hint='Use at least 8 characters.') }}
+    {{ password_field(form.confirm) }}
+    <button class='btn btn-block' type='submit'>Create account</button>
+  </form>
+  <p class='alt'>Already playing? <a href='{{ url_for("auth.login") }}'>Log in</a></p>
+{% endblock %}
