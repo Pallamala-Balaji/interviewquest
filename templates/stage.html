@@ -21,7 +21,7 @@
   </p>
 </header>
 
-{{ say(level.guide or level.world, stage.story, 'scene-text') }}
+{{ say(level.guide or level.world, stage.story, 'scene-text', true) }}
 
 <div class='console' aria-hidden='true'>
   <p class='dim'>&gt; The game screen for this {% if stage.kind == 'stage' %}stage{% else %}boss{% endif %} is being built.</p>

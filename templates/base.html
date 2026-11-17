@@ -1,26 +1,53 @@
 <!doctype html>
-<html lang='en'>
+<html lang='en'{% if current_user.is_authenticated %} data-theme='{{ current_user.theme }}'{% endif %}>
 <head>
   <meta charset='utf-8'>
   <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <meta name='csrf-token' content='{{ csrf_token() }}'>
   <title>{% block title %}InterviewQuest{% endblock %}</title>
+  <script src='{{ url_for("static", filename="js/theme-init.js") }}'></script>
   <link rel='preconnect' href='https://fonts.googleapis.com'>
   <link rel='preconnect' href='https://fonts.gstatic.com' crossorigin>
   <link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600..800&display=swap'>
   <link rel='stylesheet' href='{{ url_for("static", filename="css/style.css") }}'>
 </head>
-<body>
+<body data-logged-in='{{ 1 if current_user.is_authenticated else 0 }}' data-sound='{{ 1 if current_user.is_authenticated and current_user.sound_on else 0 }}'>
   <a class='skip' href='#main'>Skip to content</a>
   <svg width='0' height='0' style='position:absolute' aria-hidden='true' focusable='false'>
     <defs>
       <symbol id='i-star' viewBox='0 0 12 12'><path d='M6 .5L7.8 4.4 12 4.9 8.9 7.8 9.7 12 6 9.9 2.3 12 3.1 7.8 0 4.9 4.2 4.4z'/></symbol>
       <symbol id='i-key' viewBox='0 0 24 24'><path fill-rule='evenodd' d='M7 7a5 5 0 1 0 4.6 7H15v3h3v-3h2v-3h-8.4A5 5 0 0 0 7 7zm0 3a2 2 0 1 1 0 4 2 2 0 0 1 0-4z'/></symbol>
+      <symbol id='i-gear' viewBox='0 0 24 24'><circle cx='12' cy='12' r='7' fill='none' stroke='currentColor' stroke-width='3' stroke-dasharray='3 2.5'/><circle cx='12' cy='12' r='3.2' fill='currentColor'/></symbol>
     </defs>
   </svg>
 
   <header class='nav'>
     <a class='brand' href='{{ url_for("main.home") }}'>Interview<span>Quest</span></a>
     <nav class='nav-right' aria-label='Main'>
+      <details class='settings'>
+        <summary aria-label='Settings'><svg class='icon' aria-hidden='true'><use href='#i-gear'/></svg></summary>
+        <div class='settings-panel' role='group' aria-label='Settings'>
+          <fieldset class='seg'>
+            <legend>Theme</legend>
+            <div class='seg-row'>
+              <label><input type='radio' name='theme' value='system'><span>System</span></label>
+              <label><input type='radio' name='theme' value='light'><span>Light</span></label>
+              <label><input type='radio' name='theme' value='dark'><span>Dark</span></label>
+            </div>
+          </fieldset>
+          <label class='switch'><input type='checkbox' id='soundToggle'><span>Sound effects</span></label>
+          <button type='button' class='btn btn-ghost btn-sm' id='soundTest'>Play a test sound</button>
+          <div class='rate-box'>
+            <label for='rate'>Reading speed</label>
+            <select id='rate' class='input'>
+              <option value='0.8'>Slow</option>
+              <option value='1'>Normal</option>
+              <option value='1.2'>Fast</option>
+            </select>
+          </div>
+          <p class='hint' id='settingsNote'></p>
+        </div>
+      </details>
       {% if current_user.is_authenticated %}
         <a class='nav-link' href='{{ url_for("levels.level_map") }}'>Map</a>
         <a class='chip' href='{{ url_for("auth.hero") }}' title='Change your hero'>
@@ -53,6 +80,10 @@
     {% block content %}{% endblock %}
   </main>
 
+  <script src='{{ url_for("static", filename="js/iq.js") }}' defer></script>
+  <script src='{{ url_for("static", filename="js/sound.js") }}' defer></script>
+  <script src='{{ url_for("static", filename="js/narrate.js") }}' defer></script>
+  <script src='{{ url_for("static", filename="js/settings.js") }}' defer></script>
   <script src='{{ url_for("static", filename="js/ui.js") }}' defer></script>
   {% block scripts %}{% endblock %}
 </body>

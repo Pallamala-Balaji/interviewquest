@@ -20,10 +20,12 @@ def create_app(config_class=Config):
     from routes.auth import auth_bp
     from routes.levels import levels_bp
     from routes.main import main_bp
+    from routes.prefs import prefs_bp
 
     app.register_blueprint(main_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(levels_bp)
+    app.register_blueprint(prefs_bp)
     register_commands(app)
 
     app.jinja_env.globals['avatar'] = lambda avatar_id: AVATARS.get(str(avatar_id), AVATARS["1"])

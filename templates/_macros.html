@@ -19,12 +19,18 @@
 </div>
 {% endmacro %}
 
-{% macro say(name, text, id='') %}
+{% macro say(name, text, id='', listen=false) %}
 <div class='say'>
   <span class='say-face' aria-hidden='true'>{{ name[0] }}</span>
   <div class='say-bubble'>
     <strong class='say-name'>{{ name }}</strong>
     <p{% if id %} id='{{ id }}'{% endif %}>{{ text }}</p>
+    {% if listen and id %}
+    <div class='listen-bar'>
+      <button type='button' class='listen' data-target='#{{ id }}' aria-pressed='false'>Listen</button>
+      <button type='button' class='listen-stop' hidden>Stop</button>
+    </div>
+    {% endif %}
   </div>
 </div>
 {% endmacro %}

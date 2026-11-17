@@ -19,7 +19,7 @@
   </div>
 </header>
 
-{{ say(level.guide or level.world, level.story_intro) }}
+{{ say(level.guide or level.world, level.story_intro, 'intro-text', true) }}
 
 {% if stage_map.nodes %}
 <div class='map-wrap'>

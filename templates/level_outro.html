@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% from '_macros.html' import say %}
 {% block title %}World cleared - InterviewQuest{% endblock %}
 {% block content %}
 <a class='back' href='{{ url_for("levels.level_hub", slug=level.slug) }}'>Back to {{ level.world }}</a>
@@ -8,10 +9,14 @@
   <p class='lede'>{{ level.world }}</p>
 </header>
 
-<section class='story-card' aria-labelledby='outro-title'>
-  <h2 id='outro-title'>What happens next</h2>
-  <p>{{ level.story_outro }}</p>
-</section>
+{% if level.key_name %}
+<div class='reward-key'>
+  <svg class='big-key' viewBox='0 0 24 24' aria-hidden='true'><use href='#i-key'/></svg>
+  <p>{{ level.key_name }}</p>
+</div>
+{% endif %}
+
+{{ say(level.guide or level.world, level.story_outro, 'outro-text', true) }}
 
 <div class='actions'>
   {% if following %}
