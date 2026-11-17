@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import say %}
+{% block title %}{{ level.world }} - InterviewQuest{% endblock %}
+{% block content %}
+<a class='back' href='{{ url_for("levels.level_map") }}'>Back to the map</a>
+
+<header class='world-hero'>
+  <div class='world-art' aria-hidden='true'>
+    <svg viewBox='-34 -34 68 68'>{% include ['art/' ~ level.slug ~ '.html', 'art/none.html'] %}</svg>
+  </div>
+  <div>
+    <h1>{{ level.world }}</h1>
+    <p class='lede'>{{ level.title }}</p>
+    <p class='world-stats'>
+      <span class='progress-pill'><strong>{{ done }}</strong> of {{ total }} stages cleared</span>
+      <span class='progress-pill'><svg class='icon-star' aria-hidden='true'><use href='#i-star'/></svg><strong>{{ stars }}</strong> stars</span>
+      {% if progress.status == 'completed' %}<a class='progress-pill' href='{{ url_for("levels.level_outro", slug=level.slug) }}'>Read how this world ends</a>{% endif %}
+    </p>
+  </div>
+</header>
+
+{{ say(level.guide or level.world, level.story_intro) }}
+
+{% if stage_map.nodes %}
+<div class='map-wrap'>
+<svg class='stage-map' viewBox='0 0 390 {{ stage_map.height }}' role='group' aria-label='Stage path through {{ level.world }}'>
+  {% set h = stage_map.height %}
+  <path class='hill-b' d='M0 {{ h - 70 }}Q100 {{ h - 120 }} 200 {{ h - 80 }}T390 {{ h - 100 }}V{{ h }}H0Z'/>
+  <path class='hill-a' d='M0 {{ h - 30 }}Q120 {{ h - 80 }} 240 {{ h - 40 }}T390 {{ h - 50 }}V{{ h }}H0Z'/>
+  <path class='trail-base' d='{{ stage_map.path }}'/>
+  <path class='trail-done' d='{{ stage_map.done_path }}'/>
+  {% include ['scenery/' ~ level.slug ~ '.html', 'scenery/none.html'] ignore missing %}
+
+  {% for n in stage_map.nodes %}
+    {% set st = n.stage %}
+    {% set sp = n.progress %}
+    {% set label = 'Mini boss' if st.kind == 'mini_boss' else 'Main boss' if st.kind == 'main_boss' else 'Stage ' ~ n.number %}
+    {% if st.banner %}
+      {% set bx = 14 if n.x >= 195 else 226 %}
+      <g class='banner' transform='translate({{ bx }} {{ n.y - 11 }})'>
+        <path d='M0 0H150L142 11L150 22H0L8 11Z'/>
+        <text x='16' y='15'>{{ st.banner }}</text>
+      </g>
+    {% endif %}
+    {% if sp.status == 'locked' %}
+    <g class='node {{ st.kind }} locked' role='img' aria-label='{{ label }}: {{ st.title }}, locked'>
+    {% else %}
+    <a class='node {{ st.kind }} {{ sp.status }}{% if n.is_current %} current{% endif %}' href='{{ url_for("levels.stage_page", slug=level.slug, order_no=st.order_no) }}' aria-label='{{ label }}: {{ st.title }}, {{ "cleared" if sp.status == "completed" else "open" }}'>
+    {% endif %}
+      {% if n.is_current %}<circle class='halo' cx='{{ n.x }}' cy='{{ n.y }}' r='{{ n.radius + 12 }}'/>{% endif %}
+      <circle class='shade' cx='{{ n.x }}' cy='{{ n.y + 4 }}' r='{{ n.radius }}'/>
+      <circle class='dot' cx='{{ n.x }}' cy='{{ n.y }}' r='{{ n.radius }}'/>
+      {% if st.kind == 'stage' %}
+        <text class='num' x='{{ n.x }}' y='{{ n.y + 5 }}'>{{ n.number }}</text>
+      {% elif st.kind == 'mini_boss' %}
+        <path class='glyph' d='M{{ n.x - 12 }} {{ n.y - 12 }}l24 24M{{ n.x + 12 }} {{ n.y - 12 }}l-24 24'/>
+      {% else %}
+        <path class='glyph solid' d='M{{ n.x - 20 }} {{ n.y + 14 }}l4-22 10 12 6-17 6 17 10-12 4 22z'/>
+      {% endif %}
+      {% if sp.status == 'completed' %}
+        {% for i in range(3) %}
+          <use href='#i-star' class='star{% if i < sp.stars %} on{% endif %}' x='{{ n.x - 20 + i * 14 }}' y='{{ n.y + n.radius + 6 }}' width='12' height='12'/>
+        {% endfor %}
+      {% endif %}
+      {% if n.is_current %}
+        <g class='hero' aria-hidden='true'>
+          <circle cx='{{ n.x }}' cy='{{ n.y - n.radius - 18 }}' r='11'/>
+          <path d='M{{ n.x - 11 }} {{ n.y - n.radius - 22 }}q11-15 22 0z'/>
+        </g>
+      {% endif %}
+    {% if sp.status == 'locked' %}</g>{% else %}</a>{% endif %}
+  {% endfor %}
+</svg>
+</div>
+{% else %}
+  <p class='lede'>The stages for this world are being written. Check back soon.</p>
+{% endif %}
+{% endblock %}
+{% block scripts %}
+  <script src='{{ url_for("static", filename="js/world.js") }}' defer></script>
+{% endblock %}

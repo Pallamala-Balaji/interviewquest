@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% from '_macros.html' import say %}
+{% block title %}{{ stage.title }} - InterviewQuest{% endblock %}
+{% block content %}
+<a class='back' href='{{ url_for("levels.level_hub", slug=level.slug) }}'>Back to {{ level.world }}</a>
+
+<header class='stage-head'>
+  <p class='kicker kind-{{ stage.kind }}'>
+    {%- if stage.kind == 'stage' %}Stage {{ stage_no }}{% elif stage.kind == 'mini_boss' %}Mini boss{% else %}Main boss{% endif -%}
+  </p>
+  <h1>{{ stage.title }}</h1>
+  <p>
+    <span class='concept'>{{ stage.concept }}</span>
+    {% if stage_progress.status == 'completed' %}
+      <span class='stage-stars' role='img' aria-label='{{ stage_progress.stars }} of 3 stars'>
+        {% for i in range(3) %}<svg class='icon-star star{% if i < stage_progress.stars %} on{% endif %}' aria-hidden='true'><use href='#i-star'/></svg>{% endfor %}
+      </span>
+    {% else %}
+      <span class='status status-unlocked'>Open</span>
+    {% endif %}
+  </p>
+</header>
+
+{{ say(level.guide or level.world, stage.story, 'scene-text') }}
+
+<div class='console' aria-hidden='true'>
+  <p class='dim'>&gt; The game screen for this {% if stage.kind == 'stage' %}stage{% else %}boss{% endif %} is being built.</p>
+  <p class='dim'>&gt; Your answers and their results will appear here.</p>
+</div>
+<div class='console-input' aria-hidden='true'>Type your answer here</div>
+<p class='coming'>The game screen for this {% if stage.kind == 'stage' %}stage{% else %}boss{% endif %} is being built. Check back soon.</p>
+{% endblock %}

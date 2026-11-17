@@ -18,3 +18,13 @@
   {% for error in f.errors %}<small class='error' role='alert'>{{ error }}</small>{% endfor %}
 </div>
 {% endmacro %}
+
+{% macro say(name, text, id='') %}
+<div class='say'>
+  <span class='say-face' aria-hidden='true'>{{ name[0] }}</span>
+  <div class='say-bubble'>
+    <strong class='say-name'>{{ name }}</strong>
+    <p{% if id %} id='{{ id }}'{% endif %}>{{ text }}</p>
+  </div>
+</div>
+{% endmacro %}

@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}World map - InterviewQuest{% endblock %}
+{% block content %}
+<header class='map-head'>
+  <div>
+    <h1>Your journey</h1>
+    <p class='lede'>Clear every stage and beat the main boss to win a Key and unlock the next language.</p>
+  </div>
+  <p class='progress-pill'><strong>{{ cleared }}</strong> of {{ total }} worlds cleared</p>
+</header>
+
+<div class='map-wrap'>
+  <svg class='world-map' viewBox='0 0 390 {{ world_map.height }}' role='group' aria-label='Map of the worlds'>
+    {% set h = world_map.height %}
+    <path class='hill-b' d='M0 {{ h - 70 }}Q100 {{ h - 120 }} 200 {{ h - 80 }}T390 {{ h - 100 }}V{{ h }}H0Z'/>
+    <path class='hill-a' d='M0 {{ h - 30 }}Q120 {{ h - 80 }} 240 {{ h - 40 }}T390 {{ h - 50 }}V{{ h }}H0Z'/>
+    <path class='trail-base' d='{{ world_map.path }}'/>
+    <path class='trail-done' d='{{ world_map.done_path }}'/>
+
+    {% for n in world_map.nodes %}
+      {% set lv = n.level %}
+      {% set st = n.progress.status %}
+      {% set previous = world_map.nodes[loop.index0 - 1].level.world if not loop.first else '' %}
+      {% if st == 'locked' %}
+      <g class='wnode locked' role='img' aria-label='{{ lv.title }}: {{ lv.world }}, locked{% if previous %}. Beat the main boss of {{ previous }} to open it{% endif %}'>
+      {% else %}
+      <a class='wnode {{ st }}{% if n.is_current %} current{% endif %}' href='{{ url_for("levels.level_hub", slug=lv.slug) }}' aria-label='{{ lv.title }}: {{ lv.world }}, {{ "cleared" if st == "completed" else "open" }}'>
+      {% endif %}
+        {% if n.is_current %}<circle class='halo' cx='{{ n.x }}' cy='{{ n.y }}' r='{{ n.radius + 14 }}'/>{% endif %}
+        <circle class='ring' cx='{{ n.x }}' cy='{{ n.y }}' r='{{ n.radius }}'/>
+        <g transform='translate({{ n.x }} {{ n.y }})'>{% include ['art/' ~ lv.slug ~ '.html', 'art/none.html'] %}</g>
+        {% if st == 'completed' %}<use href='#i-key' class='key' x='{{ n.x + 16 }}' y='{{ n.y - 54 }}' width='28' height='28'/>{% endif %}
+        {% set lx = n.x + n.radius + 16 if n.side == 'right' else n.x - n.radius - 16 %}
+        {% set anchor = 'start' if n.side == 'right' else 'end' %}
+        <text class='w-title' x='{{ lx }}' y='{{ n.y - 6 }}' text-anchor='{{ anchor }}'>{{ lv.title }}</text>
+        <text class='w-sub' x='{{ lx }}' y='{{ n.y + 12 }}' text-anchor='{{ anchor }}'>{{ lv.world }}</text>
+        <text class='w-note' x='{{ lx }}' y='{{ n.y + 30 }}' text-anchor='{{ anchor }}'>
+          {%- if st == 'completed' %}Cleared, best {{ n.progress.best_score }}{% elif st == 'locked' %}Locked{% elif n.count %}{{ n.got }} of {{ n.count }} stages{% else %}Stages coming soon{% endif -%}
+        </text>
+      {% if st == 'locked' %}</g>{% else %}</a>{% endif %}
+    {% endfor %}
+  </svg>
+</div>
+{% endblock %}
+{% block scripts %}
+  <script src='{{ url_for("static", filename="js/world.js") }}' defer></script>
+{% endblock %}

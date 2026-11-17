@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}World cleared - InterviewQuest{% endblock %}
+{% block content %}
+<a class='back' href='{{ url_for("levels.level_hub", slug=level.slug) }}'>Back to {{ level.world }}</a>
+
+<header class='level-head'>
+  <h1>World cleared</h1>
+  <p class='lede'>{{ level.world }}</p>
+</header>
+
+<section class='story-card' aria-labelledby='outro-title'>
+  <h2 id='outro-title'>What happens next</h2>
+  <p>{{ level.story_outro }}</p>
+</section>
+
+<div class='actions'>
+  {% if following %}
+    <a class='btn btn-gold' href='{{ url_for("levels.level_hub", slug=following.slug) }}'>Travel to {{ following.world }}</a>
+  {% else %}
+    <p class='lede'>You reached the end of the adventure.</p>
+  {% endif %}
+  <a class='btn btn-ghost' href='{{ url_for("levels.level_map") }}'>Open the map</a>
+</div>
+{% endblock %}

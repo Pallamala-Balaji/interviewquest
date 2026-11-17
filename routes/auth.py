@@ -4,6 +4,7 @@ from sqlalchemy.exc import IntegrityError
 from extensions import db
 from forms import HeroForm, LoginForm, SignupForm
 from models import User
+from services.progress import ensure_progress
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -40,6 +41,11 @@ def signup():
             db.session.rollback()
             flash('That email is already registered.', 'error')
             return render_template('signup.html', form=form)
+        
+        ensure_progress(user)
+        login_user(user)
+        flash('Account created. Choose your hero!', 'success')
+        return redirect(url_for('auth.hero'))
 
         login_user(user)
         flash('Account created. Choose your hero!', 'success')

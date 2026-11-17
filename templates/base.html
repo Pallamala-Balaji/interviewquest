@@ -11,11 +11,18 @@
 </head>
 <body>
   <a class='skip' href='#main'>Skip to content</a>
+  <svg width='0' height='0' style='position:absolute' aria-hidden='true' focusable='false'>
+    <defs>
+      <symbol id='i-star' viewBox='0 0 12 12'><path d='M6 .5L7.8 4.4 12 4.9 8.9 7.8 9.7 12 6 9.9 2.3 12 3.1 7.8 0 4.9 4.2 4.4z'/></symbol>
+      <symbol id='i-key' viewBox='0 0 24 24'><path fill-rule='evenodd' d='M7 7a5 5 0 1 0 4.6 7H15v3h3v-3h2v-3h-8.4A5 5 0 0 0 7 7zm0 3a2 2 0 1 1 0 4 2 2 0 0 1 0-4z'/></symbol>
+    </defs>
+  </svg>
 
   <header class='nav'>
     <a class='brand' href='{{ url_for("main.home") }}'>Interview<span>Quest</span></a>
     <nav class='nav-right' aria-label='Main'>
       {% if current_user.is_authenticated %}
+        <a class='nav-link' href='{{ url_for("levels.level_map") }}'>Map</a>
         <a class='chip' href='{{ url_for("auth.hero") }}' title='Change your hero'>
           <span class='chip-face' aria-hidden='true'>{{ avatar(current_user.avatar_id) }}</span>
           <span>{{ current_user.hero_name }}</span>
